@@ -1,6 +1,6 @@
 <template>
   <v-card>
-    <v-container>
+    <v-container class="mt-2">
       <v-row>
         <v-text-field label="Home Price" variant="outlined" type="number"
                       v-model="form.homePrice"
@@ -42,10 +42,18 @@
         <v-select
           label="Loan Term"
           variant="outlined"
-          :items="['30 years', '20 years', '15 years', '10 years']"
+          :items="[
+            { title: '30 years', value: 30 },
+            { title: '20 years', value: 20 },
+            { title: '15', value: 15 },
+            { title: '10 years', value: 10 }
+          ]"
           v-model="form.loanTerm"
           @input="inputChange('loanTerm')"
         ></v-select>
+      </v-row>
+      <v-row>
+        <v-btn @click="getResults">Calculate</v-btn>
       </v-row>
     </v-container>
   </v-card>
@@ -54,6 +62,7 @@
 <script setup>
 import { useAppStore} from "@/store/app";
 import { reactive } from "vue";
+import { Loan } from "loanjs";
 const store = useAppStore();
 
 const form = reactive({
@@ -62,25 +71,33 @@ const form = reactive({
   downPaymentPercent: 0,
   interestRate: 0,
   loanTerm: 0,
-})
-let lastChanged = 'percent'
+});
+let lastChanged = 'percent';
 
 const inputChange = (inputName, newValue = null) => {
   if (inputName === 'downPaymentPercent') {
     form.downPaymentDollar = newValue * 0.01 * form.homePrice
-    lastChanged = 'percent'
+    lastChanged = 'percent';
   } else if (inputName === 'downPaymentDollar') {
     form.downPaymentPercent = newValue / form.homePrice * 100
-    lastChanged = 'dollar'
+    lastChanged = 'dollar';
   }
 
   if (inputName === 'homePrice') {
     if (lastChanged === 'percent') {
-      form.downPaymentDollar = form.downPaymentPercent * 0.01 * form.homePrice
+      form.downPaymentDollar = form.downPaymentPercent * 0.01 * form.homePrice;
     } else {
-      form.downPaymentPercent = form.downPaymentDollar / form.homePrice * 100
+      form.downPaymentPercent = form.downPaymentDollar / form.homePrice * 100;
     }
   }
   store.$patch({...form})
 }
+
+// const getResults = () => {
+//   console.log('amount should be:  ', store.homePrice - store.downPaymentDollar)
+//   const loan = new Loan(store.homePrice - store.downPaymentDollar, 30 * 12, store.interestRate)
+//   console.log('loan:  ', loan)
+//   console.log('monthly payment:  ', loan.installments[0].installment)
+//   return loan.amount
+// }
 </script>

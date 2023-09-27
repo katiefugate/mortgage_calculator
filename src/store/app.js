@@ -4,10 +4,10 @@ import { defineStore } from 'pinia'
 export const useAppStore = defineStore('app', {
   state: () => {
     return {
-      homePrice: 0,
-      downPaymentDollar: 0,
+      homePrice: 45000,
+      downPaymentDollar: 9000,
       downPaymentPercent: 0,
-      interestRate: 0,
+      interestRate: 7.7,
       loanTerm: 0,
     }
   },
