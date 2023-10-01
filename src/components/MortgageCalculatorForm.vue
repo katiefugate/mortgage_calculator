@@ -1,6 +1,6 @@
 <template>
-  <v-card>
-    <v-container class="mt-2">
+  <v-card class="pl-2 pr-2">
+    <v-container class="mt-4 mb-2">
       <v-row>
         <v-text-field label="Home Price" variant="outlined" type="number"
                       v-model="form.homePrice"
@@ -53,7 +53,7 @@
         ></v-select>
       </v-row>
       <v-row>
-        <v-btn @click="getResults">Calculate</v-btn>
+        <v-btn @click="getResults" class="bg-indigo-lighten-4">Calculate</v-btn>
       </v-row>
     </v-container>
   </v-card>
