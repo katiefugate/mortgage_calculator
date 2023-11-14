@@ -30,11 +30,11 @@
       <tr class="text-center">
         <td>{{ results.loanAmount }}</td>
         <td>{{ results.monthlyPayment }}</td>
-        <td>{{ 'results' }}</td>
-        <td>{{ 'results' }}</td>
-        <td>{{ 'results' }}</td>
-        <td>{{ 'results' }}</td>
-        <td class="bg-indigo-lighten-5">{{ 'results' }}</td>
+        <td>{{ store.propertyTax }}</td>
+        <td>{{ store.homeownersInsurance }}</td>
+        <td>{{ store.pmi }}</td>
+        <td>{{ store.hoa }}</td>
+        <td class="bg-indigo-lighten-5">{{ totalMonthly }}</td>
       </tr>
       </tbody>
     </v-table>
@@ -49,14 +49,15 @@ import { Loan } from "loanjs";
 
 
 const results = computed(() => {
-  console.log('amount should be:  ', store.homePrice - store.downPaymentDollar)
-  const loan = new Loan(store.homePrice - store.downPaymentDollar, 30 * 12, store.interestRate)
-  console.log('loan:  ', loan)
-  console.log('monthly payment:  ', loan.installments[0].installment)
+  const loan = new Loan(store.homePrice - store.downPaymentDollar, store.loanTerm * 12, store.interestRate)
   return {
     monthlyPayment: loan.installments[0].installment,
     loanAmount: loan.amount
   }
+});
+
+const totalMonthly = computed(() => {
+  return parseInt(results.value.monthlyPayment) + parseInt(store.hoa) + parseInt(store.pmi) + parseInt(store.homeownersInsurance) + parseInt(store.propertyTax);
 })
 
 </script>

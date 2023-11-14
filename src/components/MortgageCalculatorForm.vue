@@ -2,58 +2,100 @@
   <v-card class="pl-2 pr-2">
     <v-container class="mt-4 mb-2">
       <v-row>
-        <v-text-field label="Home Price" variant="outlined" type="number"
-                      v-model="form.homePrice"
-                      @input="inputChange('homePrice')"
-        ></v-text-field>
-      </v-row>
-      <v-row>
-        <v-col class="pa-0">
-          <v-text-field
-            label="Down Payment"
-            type="number"
-            variant="outlined"
-            :prepend-inner-icon="'mdi-currency-usd'"
-            v-model="form.downPaymentDollar"
-            @input="inputChange('downPaymentDollar', $event.target.value)"
-          ></v-text-field>
-        </v-col>
-        <v-col cols="4" class="pa-0">
-          <v-text-field
-            label="Down Payment"
-            type="number"
-            variant="outlined"
-            :append-inner-icon="'mdi-percent'"
-            v-model="form.downPaymentPercent"
-            @input="inputChange('downPaymentPercent', $event.target.value)"
-          ></v-text-field>
-        </v-col>
-      </v-row>
-      <v-row>
-        <v-text-field
-          label="Interest Rate"
-          variant="outlined"
-          :append-inner-icon="'mdi-percent'"
-          v-model="form.interestRate"
-          @input="inputChange('interestRate')"
-        ></v-text-field>
-      </v-row>
-      <v-row>
-        <v-select
-          label="Loan Term"
-          variant="outlined"
-          :items="[
+        <v-col>
+          <v-row>
+            <v-text-field label="Home Price" variant="outlined" type="number"
+                          v-model="form.homePrice"
+                          @input="inputChange('homePrice')"
+            ></v-text-field>
+          </v-row>
+          <v-row>
+            <v-col class="pa-0">
+              <v-text-field
+                label="Down Payment"
+                type="number"
+                variant="outlined"
+                :prepend-inner-icon="'mdi-currency-usd'"
+                v-model="form.downPaymentDollar"
+                @input="inputChange('downPaymentDollar', $event.target.value)"
+              ></v-text-field>
+            </v-col>
+            <v-col cols="4" class="pa-0">
+              <v-text-field
+                label="Down Payment"
+                type="number"
+                variant="outlined"
+                :append-inner-icon="'mdi-percent'"
+                v-model="form.downPaymentPercent"
+                @input="inputChange('downPaymentPercent', $event.target.value)"
+              ></v-text-field>
+            </v-col>
+          </v-row>
+          <v-row>
+            <v-text-field
+              label="Interest Rate"
+              variant="outlined"
+              :append-inner-icon="'mdi-percent'"
+              v-model="form.interestRate"
+              @input="inputChange('interestRate')"
+            ></v-text-field>
+          </v-row>
+          <v-row>
+            <v-select
+              label="Loan Term"
+              variant="outlined"
+              :items="[
             { title: '30 years', value: 30 },
             { title: '20 years', value: 20 },
             { title: '15', value: 15 },
             { title: '10 years', value: 10 }
           ]"
-          v-model="form.loanTerm"
-          @input="inputChange('loanTerm')"
-        ></v-select>
-      </v-row>
-      <v-row>
-        <v-btn @click="getResults" class="bg-indigo-lighten-4">Calculate</v-btn>
+              v-model="form.loanTerm"
+              @input="inputChange('loanTerm')"
+            ></v-select>
+          </v-row>
+        </v-col>
+        <v-col>
+          <v-row>
+            <v-text-field
+              label="Property Tax per month"
+              variant="outlined"
+              type="number"
+              v-model="form.propertyTax"
+              @input="inputChange('propertyTax')"
+            ></v-text-field>
+          </v-row>
+          <v-row>
+            <v-text-field
+              label="Homeowners Insurance per month"
+              variant="outlined"
+              type="number"
+              v-model="form.homeownersInsurance"
+              @input="inputChange('homeownersInsurance')"
+            ></v-text-field>
+          </v-row>
+          <v-row>
+            <v-text-field
+              label="PMI per month"
+              variant="outlined"
+              type="number"
+              v-model="form.pmi"
+              @input="inputChange('pmi')"
+            ></v-text-field>
+          </v-row>
+          <v-row>
+            <v-text-field
+              label="HOA fees per month"
+              variant="outlined"
+              type="number"
+              v-model="form.hoa"
+              @input="inputChange('hoa')"
+            ></v-text-field>
+          </v-row>
+          <v-row justify="end">
+            <v-btn @click="getResults" class="bg-indigo-lighten-4">Calculate</v-btn>
+          </v-row>
+        </v-col>
       </v-row>
     </v-container>
   </v-card>
@@ -66,11 +108,15 @@ import { Loan } from "loanjs";
 const store = useAppStore();
 
 const form = reactive({
-  homePrice: 0,
-  downPaymentDollar: 0,
-  downPaymentPercent: 0,
-  interestRate: 0,
-  loanTerm: 0,
+  homePrice: store.homePrice,
+  downPaymentDollar: store.downPaymentDollar,
+  downPaymentPercent: store.downPaymentPercent,
+  interestRate: store.interestRate,
+  loanTerm: store.loanTerm,
+  propertyTax: store.propertyTax,
+  homeownersInsurance: store.homeownersInsurance,
+  pmi: store.pmi,
+  hoa: store.hoa,
 });
 let lastChanged = 'percent';
 
@@ -90,14 +136,9 @@ const inputChange = (inputName, newValue = null) => {
       form.downPaymentPercent = form.downPaymentDollar / form.homePrice * 100;
     }
   }
-  store.$patch({...form})
 }
 
-// const getResults = () => {
-//   console.log('amount should be:  ', store.homePrice - store.downPaymentDollar)
-//   const loan = new Loan(store.homePrice - store.downPaymentDollar, 30 * 12, store.interestRate)
-//   console.log('loan:  ', loan)
-//   console.log('monthly payment:  ', loan.installments[0].installment)
-//   return loan.amount
-// }
+const getResults = () => {
+  store.$patch({...form})
+}
 </script>

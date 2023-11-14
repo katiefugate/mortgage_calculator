@@ -1,9 +1,11 @@
 <template>
   <v-container class="ml-0 mr-0 w-100" style="max-width: 100%">
     <v-row justify="space-between">
-      <v-col cols="5">
+      <v-col>
         <MortgageCalculatorForm />
       </v-col>
+    </v-row>
+    <v-row>
       <v-col>
         <MonthlyPayment />
       </v-col>
